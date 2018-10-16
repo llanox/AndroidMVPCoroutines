@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">RaMo</string>
+    <string name="search_title">Search movie by name</string>
+
+    <!--Categories-->
+    <string name="category_popular">Popular</string>
+    <string name="category_top_rated">Top Rated</string>
+    <string name="category_upcoming">Upcoming</string>
+
+</resources>
