@@ -1,4 +1,4 @@
-package com.gabo.ramo.search
+package com.gabo.ramo.presentation.search
 
 import android.app.SearchManager
 import android.content.Context
@@ -8,25 +8,33 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.SearchView
+import androidx.core.os.bundleOf
 import com.gabo.ramo.R
+import com.gabo.ramo.core.BaseView
 import com.gabo.ramo.data.Movie
 import com.gabo.ramo.data.MovieCategory
+import com.gabo.ramo.presentation.moviedetail.MOVIE_ID_PARAM
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_movie_list.*
+import kotlinx.android.synthetic.main.fragment_movie_search.*
 
 
-class MovieFragment : Fragment(), SearchMovieView, SearchQueryListener {
+class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, MovieRecyclerViewAdapter.OnListInteractionListener {
 
     companion object {
         private const val NUMBER_OF_COLUMNS = 2
         @JvmStatic
-        fun newInstance() = MovieFragment()
+        fun newInstance(arguments : Bundle) : MovieSearchFragment {
+            val fragment =  MovieSearchFragment()
+            fragment.arguments = arguments
+            return fragment
+        }
     }
 
-    lateinit var presenter: SearchMoviePresenter
-    private var listener: OnListFragmentInteractionListener? = null
+    lateinit var searchPresenter: MovieSearchPresenter
     lateinit var movieAdapter: MovieRecyclerViewAdapter
+    private var listener: BaseView.NavigationListener? = null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,12 +44,12 @@ class MovieFragment : Fragment(), SearchMovieView, SearchQueryListener {
 
 
     override fun onQueryReceived(query: String?) {
-        query?.let { presenter?.findMoviesBy(query) }
+        query?.let { searchPresenter?.findMoviesBy(query) }
     }
 
     override fun onResume() {
         super.onResume()
-        presenter?.attachView(this)
+        searchPresenter?.attachView(this)
         tabs?.let {
             val position = it.selectedTabPosition
             findMovies(position)
@@ -52,18 +60,18 @@ class MovieFragment : Fragment(), SearchMovieView, SearchQueryListener {
 
     override fun onPause() {
         super.onPause()
-        presenter?.detachView()
+        searchPresenter?.detachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_movie_list, container, false)
-        movieAdapter = MovieRecyclerViewAdapter(listOf(), listener)
+        val view = inflater.inflate(R.layout.fragment_movie_search, container, false)
+        movieAdapter = MovieRecyclerViewAdapter(listOf(), this)
         view.findViewById<RecyclerView>(R.id.list)?.apply {
             layoutManager = GridLayoutManager(context, NUMBER_OF_COLUMNS)
             adapter = movieAdapter
         }
-        presenter = SearchMoviePresenter(context)
+        searchPresenter = MovieSearchPresenter(context)
         return view
     }
 
@@ -93,7 +101,7 @@ class MovieFragment : Fragment(), SearchMovieView, SearchQueryListener {
 
     private fun findMovies(position: Int): Unit? {
         return MovieCategory.values().find { it.position == position }?.let {
-            presenter.findAllMoviesByCategory(it)
+            searchPresenter.findAllMoviesByCategory(it)
         }
     }
 
@@ -109,12 +117,13 @@ class MovieFragment : Fragment(), SearchMovieView, SearchQueryListener {
 
     }
 
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
+        if (context is BaseView.NavigationListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
+            throw RuntimeException(context.toString() + " must implement OnListInteractionListener")
         }
     }
 
@@ -133,10 +142,18 @@ class MovieFragment : Fragment(), SearchMovieView, SearchQueryListener {
         }
     }
 
+    override fun onListItemSelected(item: Movie) {
+        var params = bundleOf(MOVIE_ID_PARAM to item.id)
+        listener?.navigateTo(R.id.fragment_movie_detail, params)
 
+    }
 
-    interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: Movie?)
+    override fun startSearchQueryAnimation() {
+
+    }
+
+    override fun stopSearchQueryAnimation() {
+
     }
 
 

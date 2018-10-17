@@ -2,7 +2,6 @@ package com.gabo.ramo.core
 
 import androidx.annotation.NonNull
 
-
 abstract class BasePresenter<V : BaseView> {
 
     var view : V? = null

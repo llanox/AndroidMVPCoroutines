@@ -1,4 +1,4 @@
-package com.gabo.ramo.core
+package com.gabo.ramo.presentation
 
 import android.app.SearchManager
 import android.content.Intent
@@ -7,14 +7,16 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gabo.ramo.R
+import com.gabo.ramo.core.BaseView
 import com.gabo.ramo.core.extensions.addFragment
-import com.gabo.ramo.data.Movie
-import com.gabo.ramo.search.MovieFragment
-import com.gabo.ramo.search.SearchQueryListener
+import com.gabo.ramo.core.extensions.replaceFragment
+import com.gabo.ramo.presentation.moviedetail.MovieDetailFragment
+import com.gabo.ramo.presentation.search.MovieSearchFragment
+import com.gabo.ramo.presentation.search.SearchQueryListener
 
-class EntryPointActivity : AppCompatActivity(), MovieFragment.OnListFragmentInteractionListener {
-    override fun onListFragmentInteraction(item: Movie?) {
-    }
+class EntryPointActivity : AppCompatActivity(), BaseView.NavigationListener {
+
+
 
     override fun onNewIntent(newIntent: Intent) {
         super.onNewIntent(newIntent)
@@ -38,8 +40,16 @@ class EntryPointActivity : AppCompatActivity(), MovieFragment.OnListFragmentInte
         handleIntent(intent)
         findViewById<FrameLayout>(R.id.fragment_container)?.let {
             if (savedInstanceState == null) {
-                addFragment(MovieFragment.newInstance(), R.id.fragment_container)
+                navigateTo(R.id.fragment_movie_search, Bundle())
             }
+        }
+    }
+
+    override fun navigateTo(framentId: Int, data: Bundle) {
+        when(framentId){
+            R.id.fragment_movie_search -> replaceFragment(MovieSearchFragment.newInstance(data), R.id.fragment_container)
+            R.id.fragment_movie_detail -> replaceFragment(MovieDetailFragment.newInstance(data), R.id.fragment_container)
+            else -> addFragment(MovieSearchFragment.newInstance(data), R.id.fragment_container)
         }
     }
 

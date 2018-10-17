@@ -1,4 +1,4 @@
-package com.gabo.ramo.search
+package com.gabo.ramo.presentation.search
 
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
@@ -11,15 +11,13 @@ import com.gabo.ramo.R
 import com.gabo.ramo.data.Movie
 
 
-import com.gabo.ramo.search.MovieFragment.OnListFragmentInteractionListener
-
-import kotlinx.android.synthetic.main.fragment_movie.view.*
+import kotlinx.android.synthetic.main.movie_item.view.*
 import com.bumptech.glide.request.RequestOptions
 import com.gabo.ramo.data.IMAGE_BASE_URL
 
 class MovieRecyclerViewAdapter(
         private var mValues: List<Movie>,
-        private val mListener: OnListFragmentInteractionListener?)
+        private val mListener: OnListInteractionListener?)
     : RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
@@ -29,13 +27,14 @@ class MovieRecyclerViewAdapter(
             val item = v.tag as Movie
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onListItemSelected(item)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_movie, parent, false)
+                .inflate(R.layout.movie_item, parent, false)
+
         return ViewHolder(view)
     }
 
@@ -62,5 +61,10 @@ class MovieRecyclerViewAdapter(
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val imageView: ImageView = mView.movie_image
+    }
+
+
+    interface OnListInteractionListener {
+        fun onListItemSelected(item: Movie)
     }
 }

@@ -1,8 +1,10 @@
 package com.gabo.ramo.data
 
+import androidx.annotation.Nullable
 import com.google.gson.annotations.SerializedName
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+
 
 enum class MovieCategory(val position: Int, val code: String, val label: String) {
     POPULAR(0, "popular", "popular"),
@@ -10,4 +12,15 @@ enum class MovieCategory(val position: Int, val code: String, val label: String)
     UPCOMING(2, "upcoming", "upcoming")
 }
 
-data class Movie(@PrimaryKey @SerializedName("id") val id: String, @SerializedName("title") val title: String, @SerializedName("poster_path") val posterPath: String) : RealmObject()
+open class Movie(@PrimaryKey @SerializedName("id") var id: Int = 0, @SerializedName("title") var title: String = "", @Nullable @SerializedName("poster_path") var posterPath: String = "", @SerializedName("overview") var overview: String = "") : RealmObject()
+
+sealed class Response<out T : Any> {
+
+    class Success<out T : Any>(val data: T) : Response<T>()
+
+    class Error(val error: Throwable = Throwable(), val errorMsg: String = "") : Response<Nothing>()
+}
+
+object MovieMapper {
+    data class Result(val results: List<Movie>)
+}

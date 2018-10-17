@@ -2,4 +2,5 @@
 <resources>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="photos_margin">8dp</dimen>
+    <dimen name="title_text_size">24sp</dimen>
 </resources>

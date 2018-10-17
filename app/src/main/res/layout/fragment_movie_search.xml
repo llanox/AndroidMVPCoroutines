@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_content"
+    android:id="@+id/fragment_movie_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
@@ -31,7 +31,7 @@
             app:layoutManager="LinearLayoutManager"
             android:layout_below="@id/tabs"
             android:layout_alignParentBottom="true"
-            tools:context=".search.MovieFragment"
+            tools:context=".presentation.search.MovieSearchFragment"
             tools:spanCount="5" />
 
 
