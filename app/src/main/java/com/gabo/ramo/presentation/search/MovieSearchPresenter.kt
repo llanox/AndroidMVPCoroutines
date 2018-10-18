@@ -46,6 +46,8 @@ class MovieSearchPresenter(context: Context?) : BasePresenter<MovieSearchView>()
 
         GlobalScope.launch(contextPool.Main) {
 
+            view?.startLoadingCategoryAnimation()
+
             val listOfMovies = withContext(contextPool.IO) {
                 findMoviesByCategoryInteractor.execute(category)
             }
@@ -56,6 +58,9 @@ class MovieSearchPresenter(context: Context?) : BasePresenter<MovieSearchView>()
                 }
                 is Response.Error -> view?.showErrorFetchingMovies(listOfMovies.errorMsg)
             }
+
+            view?.stopLoadingCategoryAnimation()
+
 
         }
 

@@ -9,4 +9,6 @@ interface MovieSearchView: BaseView {
     fun startSearchQueryAnimation()
     fun stopSearchQueryAnimation()
     fun showModeSearchingResults(size: Int)
+    fun startLoadingCategoryAnimation()
+    fun stopLoadingCategoryAnimation()
 }

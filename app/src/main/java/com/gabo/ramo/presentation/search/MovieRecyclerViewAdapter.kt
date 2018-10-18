@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.gabo.ramo.R
 import com.gabo.ramo.data.Movie
@@ -50,6 +51,8 @@ class MovieRecyclerViewAdapter(
             tag = item
             setOnClickListener(mOnClickListener)
         }
+        holder.title.text = item.title
+
     }
 
     override fun getItemCount(): Int = mValues.size
@@ -61,6 +64,7 @@ class MovieRecyclerViewAdapter(
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val imageView: ImageView = mView.movie_image
+        val title : TextView = mView.title
     }
 
 

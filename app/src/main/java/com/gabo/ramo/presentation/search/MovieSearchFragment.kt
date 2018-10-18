@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_movie_search.*
 
 class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, MovieRecyclerViewAdapter.OnListInteractionListener {
 
+
     companion object {
         private const val NUMBER_OF_COLUMNS = 2
         @JvmStatic
@@ -125,6 +126,8 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
             it.setOnCloseListener {
                 isSearching = false
                 tabs?.visibility = View.VISIBLE
+                val position = tabs?.selectedTabPosition ?: 0
+                findMovies(position)
                 true
             }
 
@@ -169,11 +172,30 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
 
     override fun startSearchQueryAnimation() {
 
+        loading_animation.visibility = View.VISIBLE
+        list.visibility = View.GONE
+        loading_animation.setAnimation(R.raw.search_ask_loop)
+        loading_animation.playAnimation()
 
     }
 
     override fun stopSearchQueryAnimation() {
+        loading_animation.pauseAnimation()
+        loading_animation.visibility = View.GONE
+        list.visibility = View.VISIBLE
+    }
 
+    override fun startLoadingCategoryAnimation() {
+        loading_animation.visibility = View.VISIBLE
+        list.visibility = View.GONE
+        loading_animation.setAnimation(R.raw.loading)
+        loading_animation.playAnimation()
+    }
+
+    override fun stopLoadingCategoryAnimation() {
+        loading_animation.pauseAnimation()
+        loading_animation.visibility = View.GONE
+        list.visibility = View.VISIBLE
     }
 
     override fun showModeSearchingResults(resultsSize: Int) {
