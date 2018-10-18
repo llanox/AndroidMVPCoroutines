@@ -16,7 +16,7 @@ interface MovieRepository {
     @GET("movie/{category}")
     fun listMovieByCategory(@Path("category") category: String, @Query("api_key") apiKey: String = API_KEY): Deferred<MovieMapper.Result>
 
-    @GET("search/movie/")
+    @GET("search/movie")
     fun listMovieByQuery(@Query("api_key") apiKey: String = API_KEY, @Query("query") query: String): Deferred<MovieMapper.Result>
 
 }

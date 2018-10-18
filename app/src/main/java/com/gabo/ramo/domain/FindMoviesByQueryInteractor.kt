@@ -3,9 +3,11 @@ package com.gabo.ramo.domain
 import android.util.Log
 import com.gabo.ramo.data.*
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.vicpin.krealmextensions.BuildConfig
 import com.vicpin.krealmextensions.saveAll
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -18,12 +20,18 @@ class FindMoviesByQueryInteractor(cacheDir: File?) : InteractorCommand<Response<
                 .baseUrl(BASE_URL)
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
+        val clientBuilder = OkHttpClient().newBuilder()
         cacheDir?.let {
-            retrofitBuilder.client(
-                    OkHttpClient()
-                            .newBuilder()
-                            .cache(Cache(it, CACHE_SIZE_BYTES)).build())
+            clientBuilder.cache(Cache(it, CACHE_SIZE_BYTES))
         }
+
+        val loggingInterceptor = HttpLoggingInterceptor()
+
+        if(BuildConfig.DEBUG){
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            clientBuilder.addInterceptor(loggingInterceptor)
+        }
+        retrofitBuilder.client(clientBuilder.build())
 
         retrofitBuilder.build()
     }

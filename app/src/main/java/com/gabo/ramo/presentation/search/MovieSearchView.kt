@@ -8,4 +8,5 @@ interface MovieSearchView: BaseView {
     fun showErrorFetchingMovies(errorMsg: String)
     fun startSearchQueryAnimation()
     fun stopSearchQueryAnimation()
+    fun showModeSearchingResults(size: Int)
 }

@@ -26,12 +26,17 @@ class MovieSearchPresenter(context: Context?) : BasePresenter<MovieSearchView>()
                 findMoviesByQueryInteractor.execute(query)
             }
 
-            view?.stopSearchQueryAnimation()
 
             when (listOfMovies) {
-                is Response.Success -> view?.updateListOfMovies(listOfMovies.data)
+                is Response.Success -> {
+                    view?.updateListOfMovies(listOfMovies.data)
+                    view?.showModeSearchingResults(listOfMovies.data.size)
+                }
                 is Response.Error -> view?.showErrorFetchingMovies(listOfMovies.errorMsg)
             }
+
+            view?.stopSearchQueryAnimation()
+
 
         }
 
@@ -46,7 +51,9 @@ class MovieSearchPresenter(context: Context?) : BasePresenter<MovieSearchView>()
             }
 
             when (listOfMovies) {
-                is Response.Success -> view?.updateListOfMovies(listOfMovies.data)
+                is Response.Success -> {
+                    view?.updateListOfMovies(listOfMovies.data)
+                }
                 is Response.Error -> view?.showErrorFetchingMovies(listOfMovies.errorMsg)
             }
 

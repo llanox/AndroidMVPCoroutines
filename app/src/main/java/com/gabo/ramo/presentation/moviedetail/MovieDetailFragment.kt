@@ -62,7 +62,7 @@ class MovieDetailFragment : Fragment(), MovieDetailScreen {
             val uri = it.posterPath?.let { Uri.parse("$IMAGE_BASE_URL$it") }
             Glide.with(fragment_movie_detail)
                     .load(uri)
-                    .apply(RequestOptions().fitCenter().override(900, 1200))
+                    .apply(RequestOptions().fitCenter().override(574, 750))
                     .into(movie_poster)
             movie_title.text = it.title
             movie_overview.text = it.overview

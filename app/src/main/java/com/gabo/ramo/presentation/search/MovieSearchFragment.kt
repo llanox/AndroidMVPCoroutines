@@ -24,8 +24,8 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
     companion object {
         private const val NUMBER_OF_COLUMNS = 2
         @JvmStatic
-        fun newInstance(arguments : Bundle) : MovieSearchFragment {
-            val fragment =  MovieSearchFragment()
+        fun newInstance(arguments: Bundle): MovieSearchFragment {
+            val fragment = MovieSearchFragment()
             fragment.arguments = arguments
             return fragment
         }
@@ -34,7 +34,7 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
     lateinit var searchPresenter: MovieSearchPresenter
     lateinit var movieAdapter: MovieRecyclerViewAdapter
     private var listener: BaseView.NavigationListener? = null
-
+    private var isSearching: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,11 +50,15 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
     override fun onResume() {
         super.onResume()
         searchPresenter?.attachView(this)
+
+        if(isSearching){
+            return
+        }
+
         tabs?.let {
             val position = it.selectedTabPosition
             findMovies(position)
         }
-
 
     }
 
@@ -77,7 +81,12 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        buildTabs()
+    }
 
+    private fun buildTabs() {
+        tabs.clearOnTabSelectedListeners()
+        tabs.removeAllTabs()
         for (category in MovieCategory.values()) {
             tabs.addTab(tabs.newTab().setText(category.label), category.position)
         }
@@ -91,12 +100,12 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    val position = it.position
-                    findMovies(position)
+                        val position = it.position
+                        findMovies(position)
+
                 }
             }
         })
-
     }
 
     private fun findMovies(position: Int): Unit? {
@@ -111,8 +120,18 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
         menuInflater.inflate(R.menu.options_menu, menu)
         // Associate searchable configuration with the SearchView
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu?.findItem(R.id.search_movies)?.actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+        (menu?.findItem(R.id.search_movies)?.actionView as SearchView).let {
+            it.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
+            it.setOnCloseListener {
+                isSearching = false
+                tabs?.visibility = View.VISIBLE
+                true
+            }
+
+            it.setOnSearchClickListener {
+                isSearching = true
+                tabs?.visibility = View.GONE
+            }
         }
 
     }
@@ -150,11 +169,15 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
 
     override fun startSearchQueryAnimation() {
 
+
     }
 
     override fun stopSearchQueryAnimation() {
 
     }
 
+    override fun showModeSearchingResults(resultsSize: Int) {
+        Snackbar.make(tabs, "Search results ($resultsSize)", Snackbar.LENGTH_LONG).show()
+    }
 
 }
