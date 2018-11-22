@@ -22,6 +22,7 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loading_animation"
             android:visibility="gone"
+            android:layout_centerInParent="true"
             app:lottie_loop="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

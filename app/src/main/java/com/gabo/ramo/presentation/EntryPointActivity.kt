@@ -4,9 +4,7 @@ import android.app.SearchManager
 import android.content.Intent
 import android.os.Bundle
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import com.gabo.ramo.R
 import com.gabo.ramo.core.BaseView
 import com.gabo.ramo.core.extensions.addFragment
@@ -29,7 +27,7 @@ class EntryPointActivity : AppCompatActivity(), BaseView.NavigationListener {
             val query = intent.getStringExtra(SearchManager.QUERY)
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
             if (currentFragment is SearchQueryListener) {
-                currentFragment?.onQueryReceived(query)
+                currentFragment.onQueryReceived(query)
             }
         }
     }

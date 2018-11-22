@@ -32,8 +32,8 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
         }
     }
 
-    lateinit var searchPresenter: MovieSearchPresenter
-    lateinit var movieAdapter: MovieRecyclerViewAdapter
+    private lateinit var searchPresenter: MovieSearchPresenter
+    private lateinit var movieAdapter: MovieRecyclerViewAdapter
     private var listener: BaseView.NavigationListener? = null
     private var isSearching: Boolean = false
 
@@ -45,12 +45,12 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
 
 
     override fun onQueryReceived(query: String?) {
-        query?.let { searchPresenter?.findMoviesBy(query) }
+        query?.let { searchPresenter.findMoviesBy(query) }
     }
 
     override fun onResume() {
         super.onResume()
-        searchPresenter?.attachView(this)
+        searchPresenter.attachView(this)
 
         if(isSearching){
             return
@@ -65,7 +65,7 @@ class MovieSearchFragment : Fragment(), MovieSearchView, SearchQueryListener, Mo
 
     override fun onPause() {
         super.onPause()
-        searchPresenter?.detachView()
+        searchPresenter.detachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
